@@ -1,0 +1,39 @@
+#root {
+    margin: 0;
+}
+
+.head {
+    display: flex;
+    /* align-items: center; */
+    width: calc(100% - 50px);
+    position: absolute;
+    z-index: 100;
+}
+
+.entry {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.info {
+    position: absolute;
+}
+
+.contain {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .head {
+        align-items: center;
+        flex-direction: column;
+        width: calc(100% - 100px);
+        margin: 0 50px;
+        height: calc(100vh - 20px);
+    }
+}

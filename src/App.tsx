@@ -178,6 +178,7 @@ function HostedVideo({ post }: { post: Post }) {
         title={post.title}
         autoPlay
         loop
+        playsInline
       />
     </div>
   );

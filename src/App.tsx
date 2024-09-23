@@ -61,8 +61,8 @@ function App() {
   return (
     <>
       <div className="head">
-        <h1 style={{ marginTop: "-0.2em" }}>{hash || "rview"}</h1>
-        <div style={{ padding: 5, flexGrow: 1, textAlign: "center" }}>
+        <h1>{hash || "rview"}</h1>
+        <div className="caption">
           {post && (
             <>
               <h4>
@@ -94,7 +94,8 @@ function App() {
             </>
           )}
         </div>
-        <div style={{ padding: 5, whiteSpace: "nowrap" }}>
+        <div className="md-spacer "></div>
+        <div className="nav">
           <button onClick={handlePrev} disabled={!prevEnebled}>
             ◀︎ Prev
           </button>{" "}

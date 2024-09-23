@@ -29,12 +29,6 @@ body {
     height: 100vh;
 }
 
-h1 {
-    font-size: clamp(1.5em, 3em, 5vw);
-    letter-spacing: -0.05em;
-    filter: drop-shadow(3px 3px 8px #000);
-}
-
 h1,
 h2,
 h3,
@@ -43,6 +37,13 @@ h5,
 h6,
 h7 {
     margin: 0;
+}
+
+h1 {
+    font-size: clamp(1.5em, 3em, 5vw);
+    letter-spacing: -0.05em;
+    filter: drop-shadow(3px 3px 8px #000) drop-shadow(3px 3px 12px #000);
+    margin-top: -0.2em;
 }
 
 button {

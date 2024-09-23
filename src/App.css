@@ -30,6 +30,17 @@
     z-index: -1;
 }
 
+.caption {
+    padding: 5px;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.nav {
+    padding: 5px;
+    white-space: nowrap;
+}
+
 .info {
     position: absolute;
 }
@@ -47,5 +58,18 @@
         width: calc(100% - 100px);
         margin: 0 50px;
         height: calc(100vh - 20px);
+    }
+
+    .md-spacer {
+        flex-grow: 1;
+    }
+
+    .nav {
+        align-self: end;
+        margin-right: -2em;
+    }
+
+    .caption {
+        flex-grow: 0;
     }
 }

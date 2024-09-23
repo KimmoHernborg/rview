@@ -12,7 +12,7 @@ function App() {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const post = posts && posts[postIndex];
   const isGallery = !!post?.data?.is_gallery;
-  const galleryLength = isGallery ? post?.data?.gallery_data.items.length : 0;
+  const galleryLength = isGallery ? post?.data?.gallery_data?.items.length : 0;
 
   const handlePrev = () => {
     if (isGallery && galleryIndex - 1 >= 0) {
@@ -33,6 +33,9 @@ function App() {
       index + 1 < posts.length ? index + 1 : posts.length - 1,
     );
   };
+
+  const prevEnebled = posts.length > 0 && postIndex > 0;
+  const nextEnabled = posts.length > 0 && postIndex < posts.length - 1;
 
   useEffect(() => {
     document.title = hash;
@@ -92,8 +95,12 @@ function App() {
           )}
         </div>
         <div style={{ padding: 5, whiteSpace: "nowrap" }}>
-          <button onClick={handlePrev}>◀︎ Prev</button>{" "}
-          <button onClick={handleNext}>Next ►</button>
+          <button onClick={handlePrev} disabled={!prevEnebled}>
+            ◀︎ Prev
+          </button>{" "}
+          <button onClick={handleNext} disabled={!nextEnabled}>
+            Next ►
+          </button>
         </div>
       </div>
 
@@ -116,16 +123,22 @@ function DefaultPost({
   galleryIndex: number;
 }) {
   console.log(post);
-  if (post.post_hint === "image") return <Image post={post} />;
+  const backgroundImage = post.preview?.images[0].resolutions[0].url;
+
+  if (post.post_hint === "image")
+    return <Image post={post} backgroundImage={backgroundImage} />;
   //if (post.post_hint === "hosted:video") console.log(post);
-  if (post.post_hint === "hosted:video") return <HostedVideo post={post} />;
-  if (post.post_hint === "rich:video") return <RichVideo post={post} />;
+  if (post.post_hint === "hosted:video")
+    return <HostedVideo post={post} backgroundImage={backgroundImage} />;
+  if (post.post_hint === "rich:video")
+    return <RichVideo post={post} backgroundImage={backgroundImage} />;
   //if (post.is_gallery) console.log(post);
-  if (post.is_gallery)
+  if (post.is_gallery) {
     return <Gallery post={post} galleryIndex={galleryIndex} />;
+  }
 
   return (
-    <div className="entry">
+    <div className="entry default">
       <a target="_blank" href={BASE_URI + post.permalink}>
         <h3>{post.title}</h3>
       </a>
@@ -135,17 +148,29 @@ function DefaultPost({
 }
 
 function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
-  if (post.media_metadata) {
-    const imageKeys = Object.keys(post.media_metadata);
+  if (post.gallery_data && post.media_metadata) {
+    //const imageKeys = Object.keys(post.media_metadata);
+    const imageKeys = post.gallery_data.items.map(
+      (item: { media_id: string; id: number }) => item.media_id,
+    );
     const media = post.media_metadata[imageKeys[galleryIndex]];
+    const backgroundImage = media.p[0].u;
 
     return (
-      <div className="entry" key={media.id}>
+      <div className="entry gallery" key={media.id}>
+        <img
+          className="backBlurred"
+          src={backgroundImage}
+          alt={post.title}
+          title={post.title}
+          loading="eager"
+        />
         <img
           className="contain"
           src={media.s?.u}
           alt={post.title}
           title={post.title}
+          loading="lazy"
         />
       </div>
     );
@@ -153,25 +178,52 @@ function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
   return null;
 }
 
-function Image({ post }: { post: Post }) {
+function Image({
+  post,
+  backgroundImage,
+}: {
+  post: Post;
+  backgroundImage: string | undefined;
+}) {
   const imageUrl = post.url.includes("i.redgifs.com")
     ? post.preview?.images[0].source.url
     : post.url;
   return (
-    <div className="entry" key={post.id}>
+    <div className="entry image" key={post.id}>
+      <img
+        className="backBlurred"
+        src={backgroundImage}
+        alt={post.title}
+        title={post.title}
+        loading="eager"
+      />
       <img
         className="contain"
         src={imageUrl}
         alt={post.title}
         title={post.title}
+        loading="lazy"
       />
     </div>
   );
 }
 
-function HostedVideo({ post }: { post: Post }) {
+function HostedVideo({
+  post,
+  backgroundImage,
+}: {
+  post: Post;
+  backgroundImage: string | undefined;
+}) {
   return (
-    <div className="entry" key={post.id}>
+    <div className="entry hostedvideo" key={post.id}>
+      <img
+        className="backBlurred"
+        src={backgroundImage}
+        alt={post.title}
+        title={post.title}
+        loading="eager"
+      />
       <video
         className="contain"
         src={post.secure_media.reddit_video.fallback_url}
@@ -184,15 +236,29 @@ function HostedVideo({ post }: { post: Post }) {
   );
 }
 
-function RichVideo({ post }: { post: Post }) {
+function RichVideo({
+  post,
+  backgroundImage,
+}: {
+  post: Post;
+  backgroundImage: string | undefined;
+}) {
   return (
-    <div className="entry" key={post.id}>
+    <div className="entry richvideo" key={post.id}>
+      <img
+        className="backBlurred"
+        src={backgroundImage}
+        alt={post.title}
+        title={post.title}
+        loading="eager"
+      />
       <iframe
         className="contain"
         src={post.secure_media_embed.content?.match(/https:[^"]+/)?.[0] ?? ""}
         frameBorder="0"
         scrolling="no"
         allowFullScreen
+        loading="lazy"
       />
     </div>
   );

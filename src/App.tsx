@@ -5,6 +5,47 @@ import { Reddit, Children, Post } from "./reddit";
 
 const BASE_URI = "https://old.reddit.com";
 
+function getIndexPosistions(
+  posts: Children[],
+  postIndex: number,
+  galleryIndex: number,
+  offset: number,
+) {
+  const post = posts[postIndex];
+  const isGallery = !!post?.data?.is_gallery;
+  const galleryLength = isGallery ? post?.data?.gallery_data?.items.length : 0;
+  if (
+    isGallery &&
+    galleryIndex + offset >= 0 &&
+    galleryIndex + offset < galleryLength
+  ) {
+    // console.log("[next gallery]", {
+    //   nextPostIndex: postIndex,
+    //   nextGalleryIndex: galleryIndex + offset,
+    // });
+    return {
+      nextPostIndex: postIndex,
+      nextGalleryIndex: galleryIndex + offset,
+    };
+  }
+
+  // Next post index
+  let nextPostIndex = postIndex + offset;
+  nextPostIndex = Math.min(nextPostIndex, posts.length - 1);
+  nextPostIndex = Math.max(nextPostIndex, 0);
+
+  // Next gallery index
+  const nextIsGallery = !!posts[nextPostIndex]?.data?.is_gallery;
+  const nextGalleryLength = nextIsGallery
+    ? posts[nextPostIndex]?.data?.gallery_data?.items.length
+    : 0;
+  const nextGalleryIndex =
+    offset < 0 && nextIsGallery ? nextGalleryLength - 1 : 0;
+  // console.log("[next post+gallery]", { nextPostIndex, nextGalleryIndex });
+
+  return { nextPostIndex, nextGalleryIndex };
+}
+
 function App() {
   const [hash, setHash] = useHash();
   const [posts, setPosts] = useState<Children[]>([]);
@@ -14,32 +55,28 @@ function App() {
   const isGallery = !!post?.data?.is_gallery;
   const galleryLength = isGallery ? post?.data?.gallery_data?.items.length : 0;
 
-  const handlePrev = () => {
-    if (isGallery && galleryIndex - 1 >= 0) {
-      setGalleryIndex((index) => index - 1);
-      return;
-    }
+  const { nextPostIndex, nextGalleryIndex } = getIndexPosistions(
+    posts,
+    postIndex,
+    galleryIndex,
+    1,
+  );
+  const nextPost = posts[nextPostIndex];
 
-    // If the previous post is a gallery, go to the last image in the gallery
-    const prevPostIndex = postIndex - 1 > 0 ? postIndex - 1 : 0;
-    setPostIndex(() => prevPostIndex);
-    const prevPost = posts[prevPostIndex];
-    if (prevPost?.data?.is_gallery) {
-      setGalleryIndex(() => prevPost?.data?.gallery_data?.items.length - 1);
-      return;
-    }
-    setGalleryIndex(0);
+  const handlePrev = () => {
+    const { nextPostIndex, nextGalleryIndex } = getIndexPosistions(
+      posts,
+      postIndex,
+      galleryIndex,
+      -1,
+    );
+    setPostIndex(nextPostIndex);
+    setGalleryIndex(nextGalleryIndex);
   };
 
   const handleNext = () => {
-    if (isGallery && galleryIndex + 1 < galleryLength) {
-      setGalleryIndex((index) => index + 1);
-      return;
-    }
-    setGalleryIndex(0);
-    setPostIndex((index) =>
-      index + 1 < posts.length ? index + 1 : posts.length - 1,
-    );
+    setPostIndex(nextPostIndex);
+    setGalleryIndex(nextGalleryIndex);
   };
 
   const prevEnebled = posts.length > 0 && (postIndex > 0 || galleryIndex > 0);
@@ -116,11 +153,31 @@ function App() {
       </div>
 
       {post && (
-        <DefaultPost
-          key={post.data.id}
-          post={post.data}
-          galleryIndex={galleryIndex}
-        />
+        <>
+          <DefaultPost
+            key={post.data.id}
+            post={post.data}
+            galleryIndex={galleryIndex}
+          />
+
+          <div
+            style={{
+              visibility: "hidden",
+              width: 0,
+              height: 0,
+              overflow: "hidden",
+            }}
+          >
+            {nextPost && (
+              <DefaultPost
+                key={nextPost.data.id}
+                post={nextPost.data}
+                galleryIndex={nextGalleryIndex}
+                isPreload={true}
+              />
+            )}
+          </div>
+        </>
       )}
     </>
   );
@@ -129,9 +186,11 @@ function App() {
 function DefaultPost({
   post,
   galleryIndex,
+  isPreload = false,
 }: {
   post: Post;
   galleryIndex: number;
+  isPreload?: boolean;
 }) {
   // console.log(post);
   const backgroundImage = post.preview?.images[0].resolutions[0].url;
@@ -140,9 +199,21 @@ function DefaultPost({
     return <Image post={post} backgroundImage={backgroundImage} />;
   //if (post.post_hint === "hosted:video") console.log(post);
   if (post.post_hint === "hosted:video")
-    return <HostedVideo post={post} backgroundImage={backgroundImage} />;
+    return (
+      <HostedVideo
+        post={post}
+        backgroundImage={backgroundImage}
+        isPreload={isPreload}
+      />
+    );
   if (post.post_hint === "rich:video")
-    return <RichVideo post={post} backgroundImage={backgroundImage} />;
+    return (
+      <RichVideo
+        post={post}
+        backgroundImage={backgroundImage}
+        isPreload={isPreload}
+      />
+    );
   //if (post.is_gallery) console.log(post);
   if (post.is_gallery) {
     return <Gallery post={post} galleryIndex={galleryIndex} />;
@@ -222,9 +293,11 @@ function Image({
 function HostedVideo({
   post,
   backgroundImage,
+  isPreload = false,
 }: {
   post: Post;
   backgroundImage: string | undefined;
+  isPreload: boolean;
 }) {
   return (
     <div className="entry hostedvideo" key={post.id}>
@@ -239,7 +312,7 @@ function HostedVideo({
         className="contain"
         src={post.secure_media.reddit_video.fallback_url}
         title={post.title}
-        autoPlay
+        autoPlay={!isPreload}
         loop
         playsInline
       />
@@ -250,9 +323,11 @@ function HostedVideo({
 function RichVideo({
   post,
   backgroundImage,
+  isPreload = false,
 }: {
   post: Post;
   backgroundImage: string | undefined;
+  isPreload: boolean;
 }) {
   return (
     <div className="entry richvideo" key={post.id}>
@@ -263,14 +338,16 @@ function RichVideo({
         title={post.title}
         loading="eager"
       />
-      <iframe
-        className="contain"
-        src={post.secure_media_embed.content?.match(/https:[^"]+/)?.[0] ?? ""}
-        frameBorder="0"
-        scrolling="no"
-        allowFullScreen
-        loading="lazy"
-      />
+      {!isPreload && (
+        <iframe
+          className="contain"
+          src={post.secure_media_embed.content?.match(/https:[^"]+/)?.[0] ?? ""}
+          frameBorder="0"
+          scrolling="no"
+          allowFullScreen
+          loading="lazy"
+        />
+      )}
     </div>
   );
 }

@@ -19,8 +19,16 @@ function App() {
       setGalleryIndex((index) => index - 1);
       return;
     }
+
+    // If the previous post is a gallery, go to the last image in the gallery
+    const prevPostIndex = postIndex - 1 > 0 ? postIndex - 1 : 0;
+    setPostIndex(() => prevPostIndex);
+    const prevPost = posts[prevPostIndex];
+    if (prevPost?.data?.is_gallery) {
+      setGalleryIndex(() => prevPost?.data?.gallery_data?.items.length - 1);
+      return;
+    }
     setGalleryIndex(0);
-    setPostIndex((index) => (index - 1 > 0 ? index - 1 : 0));
   };
 
   const handleNext = () => {
@@ -34,8 +42,10 @@ function App() {
     );
   };
 
-  const prevEnebled = posts.length > 0 && postIndex > 0;
-  const nextEnabled = posts.length > 0 && postIndex < posts.length - 1;
+  const prevEnebled = posts.length > 0 && (postIndex > 0 || galleryIndex > 0);
+  const nextEnabled =
+    posts.length > 0 &&
+    (postIndex < posts.length - 1 || galleryIndex < galleryLength - 1);
 
   useEffect(() => {
     document.title = hash;
@@ -123,7 +133,7 @@ function DefaultPost({
   post: Post;
   galleryIndex: number;
 }) {
-  console.log(post);
+  // console.log(post);
   const backgroundImage = post.preview?.images[0].resolutions[0].url;
 
   if (post.post_hint === "image")

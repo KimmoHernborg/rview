@@ -130,7 +130,7 @@ function App() {
               {" - "}
               <a
                 target="_blank"
-                href={`${BASE_URI}/user/${post.data.subreddit}`}
+                href={`${BASE_URI}/r/${post.data.subreddit}`}
                 onClick={(event) => {
                   event.preventDefault();
                   setHash(`r/${post.data.subreddit}`);

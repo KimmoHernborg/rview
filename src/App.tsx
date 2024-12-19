@@ -236,6 +236,7 @@ function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
       (item: { media_id: string; id: number }) => item.media_id,
     );
     const media = post.media_metadata[imageKeys[galleryIndex]];
+    console.log(media);
     const backgroundImage = media.p[0].u;
 
     return (
@@ -249,7 +250,7 @@ function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
         />
         <img
           className="contain"
-          src={media.s?.u}
+          src={media.e === "AnimatedImage" ? media.s?.gif : media.s?.u}
           alt={post.title}
           title={post.title}
           loading="lazy"

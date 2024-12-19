@@ -148,7 +148,9 @@ export interface MediaMetadataContent {
 }
 
 export interface ShortResolution {
-  u: string;
+  u?: string;
+  gif?: string;
+  mp4?: string;
   x: number;
   y: number;
 }

@@ -89,7 +89,7 @@ function App() {
     const feed = `${BASE_URI}/${hash}.json?raw_json=1&limit=100`;
     setPostIndex(0);
     setPosts([]);
-    fetch(feed)
+    fetch(feed, { cache: "no-cache" })
       .then((res) => res.json())
       .then((data: Reddit) => {
         setPosts(

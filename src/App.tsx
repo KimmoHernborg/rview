@@ -105,6 +105,8 @@ function App() {
       });
   }, [hash]);
 
+  // console.log({ postIndex, galleryIndex });
+
   return (
     <>
       <div className="head">
@@ -192,7 +194,7 @@ function DefaultPost({
   galleryIndex: number;
   isPreload?: boolean;
 }) {
-  // console.log(post);
+  console.log(post);
   const backgroundImage = post.preview?.images[0].resolutions[0].url;
 
   if (post.post_hint === "image")
@@ -214,8 +216,8 @@ function DefaultPost({
         isPreload={isPreload}
       />
     );
-  //if (post.is_gallery) console.log(post);
   if (post.is_gallery) {
+    // console.log(post);
     return <Gallery post={post} galleryIndex={galleryIndex} />;
   }
 
@@ -236,9 +238,17 @@ function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
       (item: { media_id: string; id: number }) => item.media_id,
     );
     const media = post.media_metadata[imageKeys[galleryIndex]];
-    console.log(media);
-    const backgroundImage = media.p[0].u;
+    // console.log(media);
 
+    if (media.status !== "valid") {
+      return null;
+    }
+
+    const backgroundImage = media.p[0].u;
+    const srcSet =
+      media.p.map((image) => `${image.u} ${image.x}w`).join(", ") +
+      `, ${media.s?.u} ${media.s?.x}w`;
+    const isAnimated = media.e === "AnimatedImage";
     return (
       <div className="entry gallery" key={media.id}>
         <img
@@ -247,14 +257,32 @@ function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
           alt={post.title}
           title={post.title}
           loading="eager"
+          width={media.s?.x}
+          height={media.s?.y}
         />
-        <img
-          className="contain"
-          src={media.e === "AnimatedImage" ? media.s?.gif : media.s?.u}
-          alt={post.title}
-          title={post.title}
-          loading="lazy"
-        />
+        {isAnimated ? (
+          <img
+            className="contain"
+            src={media.s?.gif}
+            alt={post.title}
+            title={post.title}
+            loading="lazy"
+            width={media.s?.x}
+            height={media.s?.y}
+          />
+        ) : (
+          <img
+            className="contain"
+            src={media.s?.u}
+            srcSet={srcSet}
+            sizes="auto"
+            alt={post.title}
+            title={post.title}
+            loading="lazy"
+            width={media.s?.x}
+            height={media.s?.y}
+          />
+        )}
       </div>
     );
   }
@@ -271,6 +299,11 @@ function Image({
   const imageUrl = post.url.includes("i.redgifs.com")
     ? post.preview?.images[0].source.url
     : post.url;
+  const srcSet =
+    post.preview?.images[0].resolutions
+      .map((image) => `${image.url} ${image.width}w`)
+      .join(", ") +
+    `, ${post.preview?.images[0].source.url} ${post.preview?.images[0].source.width}w`;
   return (
     <div className="entry image" key={post.id}>
       <img
@@ -283,6 +316,8 @@ function Image({
       <img
         className="contain"
         src={imageUrl}
+        srcSet={srcSet}
+        sizes="auto"
         alt={post.title}
         title={post.title}
         loading="lazy"

@@ -296,9 +296,12 @@ function Image({
   post: Post;
   backgroundImage: string | undefined;
 }) {
-  const imageUrl = post.url.includes("i.redgifs.com")
-    ? post.preview?.images[0].source.url
-    : post.url;
+  const isAnimated = post.preview?.images[0]?.variants["gif"] !== undefined;
+  const imageUrl = !isAnimated
+    ? post.url.includes("i.redgifs.com")
+      ? post.preview?.images[0].source.url
+      : post.url
+    : post.preview?.images[0]?.variants.gif?.source.url;
   const srcSet =
     post.preview?.images[0].resolutions
       .map((image) => `${image.url} ${image.width}w`)
@@ -313,15 +316,25 @@ function Image({
         title={post.title}
         loading="eager"
       />
-      <img
-        className="contain"
-        src={imageUrl}
-        srcSet={srcSet}
-        sizes="auto"
-        alt={post.title}
-        title={post.title}
-        loading="lazy"
-      />
+      {!isAnimated ? (
+        <img
+          className="contain"
+          src={imageUrl}
+          srcSet={srcSet}
+          sizes="auto"
+          alt={post.title}
+          title={post.title}
+          loading="lazy"
+        />
+      ) : (
+        <img
+          className="contain"
+          src={imageUrl}
+          alt={post.title}
+          title={post.title}
+          loading="lazy"
+        />
+      )}
     </div>
   );
 }

@@ -228,16 +228,13 @@ export interface Resolution {
 }
 
 export interface Variants {
-  obfuscated: Obfuscated;
-  nsfw: Nsfw;
+  obfuscated: SourceResolution;
+  nsfw: SourceResolution;
+  gif?: SourceResolution;
+  mp4?: SourceResolution;
 }
 
-export interface Obfuscated {
-  source: Source;
-  resolutions: Resolution[];
-}
-
-export interface Nsfw {
+export interface SourceResolution {
   source: Source;
   resolutions: Resolution[];
 }

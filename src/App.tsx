@@ -85,7 +85,8 @@ function App() {
     (postIndex < posts.length - 1 || galleryIndex < galleryLength - 1);
 
   useEffect(() => {
-    document.title = hash;
+    const hashStr = hash.toString();
+    document.title = hashStr === "" ? "rview" : hashStr;
     const feed = `${BASE_URI}/${hash}.json?raw_json=1&limit=100`;
     setPostIndex(0);
     setPosts([]);

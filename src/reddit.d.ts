@@ -65,7 +65,7 @@ export interface Post {
   edited: any;
   author_flair_css_class?: string;
   author_flair_richtext: AuthorFlairRichtext[];
-  gildings: Gildings;
+  gildings: unknown;
   content_categories?: string[];
   is_self: boolean;
   mod_note: any;
@@ -199,8 +199,6 @@ export interface AuthorFlairRichtext {
   e: string;
   u: string;
 }
-
-export interface Gildings {}
 
 export interface Preview {
   images: Image[];

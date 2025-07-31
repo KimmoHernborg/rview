@@ -323,6 +323,8 @@ function Image({
           src={imageUrl}
           srcSet={srcSet}
           sizes="auto"
+          width={post.preview?.images[0].source.width}
+          height={post.preview?.images[0].source.height}
           alt={post.title}
           title={post.title}
           loading="lazy"

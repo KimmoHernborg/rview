@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useHash } from "./hooks/useHash";
+import { useRedditFeed } from "./hooks/useRedditFeed";
+import { CircleLoader } from "react-spinners";
 import "./App.css";
-import { Reddit, Children, Post } from "./reddit";
+import type { Post, Children } from "./reddit";
 
 const BASE_URI = "https://old.reddit.com";
 
@@ -48,9 +50,11 @@ function getIndexPosistions(
 
 function App() {
   const [hash, setHash] = useHash();
-  const [posts, setPosts] = useState<Children[]>([]);
   const [postIndex, setPostIndex] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
+
+  const { data: posts = [], isLoading, error } = useRedditFeed(hash);
+
   const post = posts && posts[postIndex];
   const isGallery = !!post?.data?.is_gallery;
   const galleryLength = isGallery ? post?.data?.gallery_data?.items.length : 0;
@@ -87,26 +91,49 @@ function App() {
   useEffect(() => {
     const hashStr = hash.toString();
     document.title = hashStr === "" ? "rview" : hashStr;
-    const feed = `${BASE_URI}/${hash}.json?raw_json=1&limit=100`;
     setPostIndex(0);
-    setPosts([]);
-    fetch(feed, { cache: "no-cache" })
-      .then((res) => res.json())
-      .then((data: Reddit) => {
-        setPosts(
-          data.data.children.filter(
-            (value) =>
-              value.data?.is_gallery ||
-              (value.data?.post_hint &&
-                ["image", "hosted:video", "rich:video"].includes(
-                  value.data.post_hint,
-                )),
-          ),
-        );
-      });
+    setGalleryIndex(0);
   }, [hash]);
 
   // console.log({ postIndex, galleryIndex });
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+          flexDirection: "column",
+          gap: "20px",
+        }}
+      >
+        <CircleLoader color="#ff4500" size={60} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+          flexDirection: "column",
+          gap: "20px",
+        }}
+      >
+        <h2>Error loading feed</h2>
+        <p style={{ margin: 0 }}>{error.message}</p>
+        {/* <button onClick={() => window.location.reload()}>Retry</button> */}
+      </div>
+    );
+  }
 
   return (
     <>

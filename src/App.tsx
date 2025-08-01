@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHash } from "./hooks/useHash";
 import { useRedditFeed } from "./hooks/useRedditFeed";
-import { CircleLoader } from "react-spinners";
+import { ScaleLoader } from "react-spinners";
 import "./App.css";
 import type { Post, Children } from "./reddit";
 
@@ -100,7 +100,7 @@ function App() {
   if (isLoading) {
     return (
       <div className="centered-loader">
-        <CircleLoader color="#ff4500" size={60} />
+        <ScaleLoader color="#ff4500" />
       </div>
     );
   }

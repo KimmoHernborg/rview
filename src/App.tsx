@@ -99,17 +99,7 @@ function App() {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100vw",
-          height: "100vh",
-          flexDirection: "column",
-          gap: "20px",
-        }}
-      >
+      <div className="centered-loader">
         <CircleLoader color="#ff4500" size={60} />
       </div>
     );
@@ -117,17 +107,7 @@ function App() {
 
   if (error) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100vw",
-          height: "100vh",
-          flexDirection: "column",
-          gap: "20px",
-        }}
-      >
+      <div className="centered-loader">
         <h2>Error loading feed</h2>
         <p style={{ margin: 0 }}>{error.message}</p>
         {/* <button onClick={() => window.location.reload()}>Retry</button> */}

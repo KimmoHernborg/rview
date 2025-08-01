@@ -1,75 +1,84 @@
 #root {
-    margin: 0;
+  margin: 0;
 }
 
 .head {
-    display: flex;
-    /* align-items: center; */
-    width: calc(100% - 50px);
-    position: absolute;
-    z-index: 100;
+  display: flex;
+  /* align-items: center; */
+  width: calc(100% - 50px);
+  position: absolute;
+  z-index: 100;
 }
 
 .entry {
-    display: flex;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .backBlurred {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    filter: blur(50px) brightness(0.7);
-    z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(50px) brightness(0.7);
+  z-index: -1;
 }
 
 .caption {
-    padding: 5px;
-    text-align: center;
-    flex-grow: 1;
+  padding: 5px;
+  text-align: center;
+  flex-grow: 1;
 }
 
 .nav {
-    padding: 5px;
-    white-space: nowrap;
+  padding: 5px;
+  white-space: nowrap;
 }
 
 .info {
-    position: absolute;
+  position: absolute;
 }
 
 .contain {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.centered-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  gap: 20px;
 }
 
 @media (max-width: 768px) {
-    .head {
-        align-items: center;
-        flex-direction: column;
-        width: calc(100% - 100px);
-        margin: 0 50px;
-        height: calc(100vh - 20px);
-    }
+  .head {
+    align-items: center;
+    flex-direction: column;
+    width: calc(100% - 100px);
+    margin: 0 50px;
+    height: calc(100vh - 20px);
+  }
 
-    .md-spacer {
-        flex-grow: 1;
-    }
+  .md-spacer {
+    flex-grow: 1;
+  }
 
-    .nav {
-        align-self: end;
-        margin-right: -2em;
-    }
+  .nav {
+    align-self: end;
+    margin-right: -2em;
+  }
 
-    .caption {
-        flex-grow: 0;
-    }
+  .caption {
+    flex-grow: 0;
+  }
 }

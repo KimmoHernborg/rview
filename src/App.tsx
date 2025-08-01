@@ -157,7 +157,7 @@ function App() {
             ◀︎ Prev
           </button>{" "}
           <button onClick={handleNext} disabled={!nextEnabled}>
-            Next ►
+            Next ▶
           </button>
         </div>
       </div>

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.83.1",
+    "@tanstack/react-query-devtools": "^5.84.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-spinners": "^0.17.0"

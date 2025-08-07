@@ -93,7 +93,7 @@ function App() {
     document.title = hashStr === "" ? "rview" : hashStr;
     setPostIndex(0);
     setGalleryIndex(0);
-  }, [hash]);
+  }, [hash, posts]);
 
   // console.log({ postIndex, galleryIndex });
 

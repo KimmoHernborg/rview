@@ -280,7 +280,7 @@ function Gallery({
           src={backgroundImage}
           alt={post.title}
           title={post.title}
-          loading="eager"
+          fetchPriority="high"
           width={media.s?.x}
           height={media.s?.y}
         />
@@ -301,7 +301,7 @@ function Gallery({
             sizes="auto"
             alt={post.title}
             title={post.title}
-            loading="lazy"
+            fetchPriority="low"
             width={media.s?.x}
             height={media.s?.y}
           />
@@ -339,7 +339,7 @@ function Image({
         src={backgroundImage}
         alt={post.title}
         title={post.title}
-        loading="eager"
+        fetchPriority="high"
       />
       {!isAnimated ? (
         <img
@@ -351,7 +351,7 @@ function Image({
           height={post.preview?.images[0].source.height}
           alt={post.title}
           title={post.title}
-          loading="lazy"
+          fetchPriority="low"
         />
       ) : (
         <video
@@ -383,7 +383,7 @@ function HostedVideo({
         src={backgroundImage}
         alt={post.title}
         title={post.title}
-        loading="eager"
+        fetchPriority="high"
       />
       <video
         className="contain"
@@ -413,7 +413,7 @@ function RichVideo({
         src={backgroundImage}
         alt={post.title}
         title={post.title}
-        loading="eager"
+        fetchPriority="high"
       />
       {!isPreload && (
         <iframe
@@ -422,7 +422,6 @@ function RichVideo({
           frameBorder="0"
           scrolling="no"
           allowFullScreen
-          loading="lazy"
         />
       )}
     </div>

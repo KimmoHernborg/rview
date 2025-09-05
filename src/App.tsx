@@ -298,7 +298,7 @@ function Gallery({
             className="contain"
             src={media.s?.u}
             srcSet={srcSet}
-            sizes="auto"
+            sizes="100vw"
             alt={post.title}
             title={post.title}
             fetchPriority="low"
@@ -346,7 +346,7 @@ function Image({
           className="contain"
           src={imageUrl}
           srcSet={srcSet}
-          sizes="auto"
+          sizes="100vw"
           width={post.preview?.images[0].source.width}
           height={post.preview?.images[0].source.height}
           alt={post.title}

@@ -41,6 +41,12 @@
   white-space: nowrap;
 }
 
+.loadingNext {
+  display: inline-block;
+  translate: 0 6px;
+  margin-right: 10px;
+}
+
 .info {
   position: absolute;
 }

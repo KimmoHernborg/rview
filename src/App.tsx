@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useHash } from "./hooks/useHash";
 import { useRedditFeed } from "./hooks/useRedditFeed";
-import { ScaleLoader } from "react-spinners";
+import { ScaleLoader, MoonLoader } from "react-spinners";
 import "./App.css";
 import type { Post, Children } from "./reddit";
 
@@ -53,7 +53,20 @@ function App() {
   const [postIndex, setPostIndex] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
-  const { data: posts = [], isLoading, error } = useRedditFeed(hash);
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useRedditFeed(hash);
+
+  // Flatten all posts from all pages
+  const posts = useMemo(
+    () => data?.pages.flatMap((page) => page.posts) ?? [],
+    [data?.pages],
+  );
 
   const post = posts && posts[postIndex];
   const isGallery = !!post?.data?.is_gallery;
@@ -93,7 +106,21 @@ function App() {
     document.title = hashStr === "" ? "rview" : hashStr;
     setPostIndex(0);
     setGalleryIndex(0);
-  }, [hash, posts]);
+  }, [hash]);
+
+  // Auto-load more content when buffer is running low
+  useEffect(() => {
+    const bufferThreshold = 5; // Load more when we're within 5 posts of the end
+    const shouldLoadMore =
+      hasNextPage &&
+      !isFetchingNextPage &&
+      posts.length > 0 &&
+      postIndex >= posts.length - bufferThreshold;
+
+    if (shouldLoadMore) {
+      fetchNextPage();
+    }
+  }, [postIndex, posts.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // console.log({ postIndex, galleryIndex });
 
@@ -153,6 +180,11 @@ function App() {
         </div>
         <div className="md-spacer "></div>
         <div className="nav">
+          {isFetchingNextPage && (
+            <div className="loadingNext">
+              <MoonLoader color="#eee" size={16} />
+            </div>
+          )}
           <button onClick={handlePrev} disabled={!prevEnebled}>
             ◀︎ Prev
           </button>{" "}

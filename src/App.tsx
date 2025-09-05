@@ -206,7 +206,13 @@ function DefaultPost({
   const backgroundImage = post.preview?.images[0].resolutions[0].url;
 
   if (post.post_hint === "image")
-    return <Image post={post} backgroundImage={backgroundImage} />;
+    return (
+      <Image
+        post={post}
+        backgroundImage={backgroundImage}
+        isPreload={isPreload}
+      />
+    );
   //if (post.post_hint === "hosted:video") console.log(post);
   if (post.post_hint === "hosted:video")
     return (
@@ -226,7 +232,9 @@ function DefaultPost({
     );
   if (post.is_gallery) {
     // console.log(post);
-    return <Gallery post={post} galleryIndex={galleryIndex} />;
+    return (
+      <Gallery post={post} galleryIndex={galleryIndex} isPreload={isPreload} />
+    );
   }
 
   return (
@@ -239,7 +247,15 @@ function DefaultPost({
   );
 }
 
-function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
+function Gallery({
+  post,
+  galleryIndex,
+  isPreload,
+}: {
+  post: Post;
+  galleryIndex: number;
+  isPreload: boolean;
+}) {
   if (post.gallery_data && post.media_metadata) {
     //const imageKeys = Object.keys(post.media_metadata);
     const imageKeys = post.gallery_data.items.map(
@@ -269,14 +285,13 @@ function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
           height={media.s?.y}
         />
         {isAnimated ? (
-          <img
+          <video
             className="contain"
-            src={media.s?.gif}
-            alt={post.title}
+            src={media.s?.mp4}
             title={post.title}
-            loading="lazy"
-            width={media.s?.x}
-            height={media.s?.y}
+            autoPlay={!isPreload}
+            loop
+            playsInline
           />
         ) : (
           <img
@@ -300,16 +315,18 @@ function Gallery({ post, galleryIndex }: { post: Post; galleryIndex: number }) {
 function Image({
   post,
   backgroundImage,
+  isPreload,
 }: {
   post: Post;
   backgroundImage: string | undefined;
+  isPreload: boolean;
 }) {
   const isAnimated = post.preview?.images[0]?.variants["gif"] !== undefined;
   const imageUrl = !isAnimated
     ? post.url.includes("i.redgifs.com")
       ? post.preview?.images[0].source.url
       : post.url
-    : post.preview?.images[0]?.variants.gif?.source.url;
+    : post.preview?.images[0]?.variants.mp4?.source.url;
   const srcSet =
     post.preview?.images[0].resolutions
       .map((image) => `${image.url} ${image.width}w`)
@@ -337,12 +354,13 @@ function Image({
           loading="lazy"
         />
       ) : (
-        <img
+        <video
           className="contain"
           src={imageUrl}
-          alt={post.title}
           title={post.title}
-          loading="lazy"
+          autoPlay={!isPreload}
+          loop
+          playsInline
         />
       )}
     </div>

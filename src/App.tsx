@@ -235,7 +235,9 @@ function DefaultPost({
   isPreload?: boolean;
 }) {
   console.log(post);
-  const backgroundImage = post.preview?.images[0].resolutions[0].url;
+  const backgroundImage =
+    post.preview?.images[0]?.resolutions?.[0]?.url ??
+    post.preview?.images[0]?.source?.url;
 
   if (post.post_hint === "image")
     return (

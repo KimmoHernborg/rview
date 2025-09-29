@@ -379,7 +379,7 @@ function Image({
       {!isAnimated ? (
         <img
           className="contain lowres"
-          style={{ backgroundImage: backgroundImage }}
+          style={{ border: 1, backgroundImage: `url(${backgroundImage})` }}
           src={imageUrl}
           srcSet={srcSet}
           sizes="100vw"

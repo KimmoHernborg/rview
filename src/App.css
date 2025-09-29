@@ -34,6 +34,13 @@
   object-fit: contain;
 }
 
+.lowres {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position-x: center;
+  background-position-y: center;
+}
+
 .caption {
   padding: 5px;
   text-align: center;

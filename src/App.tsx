@@ -330,7 +330,7 @@ function Gallery({
         ) : (
           <img
             className="contain lowres"
-            style={{ border: 1, backgroundImage: `url(${backgroundImage})` }}
+            style={{ backgroundImage: `url(${backgroundImage})` }}
             src={media.s?.u}
             srcSet={srcSet}
             sizes="100vw"
@@ -379,7 +379,7 @@ function Image({
       {!isAnimated ? (
         <img
           className="contain lowres"
-          style={{ border: 1, backgroundImage: `url(${backgroundImage})` }}
+          style={{ backgroundImage: `url(${backgroundImage})` }}
           src={imageUrl}
           srcSet={srcSet}
           sizes="100vw"

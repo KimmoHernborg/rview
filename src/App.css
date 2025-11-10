@@ -5,7 +5,8 @@
 .head {
   display: flex;
   /* align-items: center; */
-  width: calc(100% - 50px);
+  /* width: calc(100% - 50px); */
+  width: 100%;
   position: absolute;
   z-index: 100;
 }
@@ -86,7 +87,8 @@
 
   .nav {
     align-self: end;
-    margin-right: -2em;
+    margin-right: 1.5em;
+    margin-bottom: 1.5em;
   }
 
   .caption {

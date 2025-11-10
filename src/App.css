@@ -87,8 +87,9 @@
 
   .nav {
     align-self: end;
-    margin-right: 1.5em;
-    margin-bottom: 1.5em;
+    margin-right: 0.4em;
+    margin-bottom: 1em;
+    font-size: 0.85em;
   }
 
   .caption {

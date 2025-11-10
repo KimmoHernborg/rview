@@ -61,6 +61,7 @@ button {
   color: #ccc;
   cursor: pointer;
   transition: border-color 0.25s;
+  opacity: 0.5;
 }
 button:hover {
   border-color: var(--highlight);
@@ -70,5 +71,7 @@ button:focus-visible {
   outline: 4px auto var(--highlight-dark);
 }
 button:disabled {
-  opacity: 0.5;
+  background-color: #585858;
+  color: #898989;
+  opacity: 0.25;
 }

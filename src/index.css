@@ -65,6 +65,7 @@ button {
 }
 button:hover {
   border-color: var(--highlight);
+  opacity: 1;
 }
 button:focus,
 button:focus-visible {
@@ -74,4 +75,7 @@ button:disabled {
   background-color: #585858;
   color: #898989;
   opacity: 0.25;
+}
+button:disabled:hover {
+  opacity: 0.5;
 }
